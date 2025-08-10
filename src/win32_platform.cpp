@@ -9,6 +9,7 @@
 // Windows Globals
 // ######################
 static HWND window;
+static HDC dc;
 
 // ################################
 // Windows Platform Implementations
@@ -20,6 +21,15 @@ LRESULT CALLBACK windows_window_callback(HWND window, UINT msg, WPARAM wParam, L
     switch(msg) {
         case WM_CLOSE: {
             running = false;
+            break;
+        }
+
+        case WM_SIZE: {
+            RECT rect = {};
+            GetClientRect(window, &rect);
+            input.screenSizeX = rect.right - rect.left;
+            input.screenSizeY = rect.bottom - rect.top;
+
             break;
         }
 
@@ -133,7 +143,7 @@ bool platform_create_window(int width, int height, char* title) {
         // Add the border size of the window
         {
             RECT borderRect = {};
-            AdjustWindowReactEx(&borderRect, dwStyle, 0, 0);
+            AdjustWindowRectEx(&borderRect, dwStyle, 0, 0);
 
             width += borderRect.right - borderRect.left;
             height += borderRect.bottom - borderRect.top;
@@ -158,7 +168,7 @@ bool platform_create_window(int width, int height, char* title) {
             return false;
         }
 
-        HDC dc = GetDC(window);
+        dc = GetDC(window);
         if(!dc) {
             SM_ASSERT(false, "Failed to get DC!");
             return false;
@@ -214,7 +224,6 @@ bool platform_create_window(int width, int height, char* title) {
             SM_ASSERT(false, "Failed to wglMakeCurrent");
             return false;
         }
-// Video at 20:06 (Video 5)
     }
 
     ShowWindow(window, SW_SHOW);
@@ -243,5 +252,9 @@ void* platform_load_gl_function(char* funName) {
     }
 
     return (void*)proc;
+}
+
+void platform_swap_buffers() {
+    SwapBuffers(dc);
 }
 
