@@ -5,9 +5,9 @@
             "name": "Launch",
             "type": "cppvsdbg",
             "request": "launch",
-            "program": "${workspaceRoot}/celeste_clone.exe",
+            "program": "${workspaceFolder}/celeste_clone",
             "args": [],
-            "cwd": "${workspaceRoot}",
+            "cwd": "${workspaceFolder}",
             "console": "integratedTerminal"
         }
     ]

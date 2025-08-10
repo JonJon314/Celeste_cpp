@@ -16,7 +16,7 @@ static HDC dc;
 // ################################
 
 LRESULT CALLBACK windows_window_callback(HWND window, UINT msg, WPARAM wParam, LPARAM lParam) {
-    LRESULT restult = 0;
+    LRESULT result = 0;
 
     switch(msg) {
         case WM_CLOSE: {
@@ -35,11 +35,11 @@ LRESULT CALLBACK windows_window_callback(HWND window, UINT msg, WPARAM wParam, L
 
         default: {
             // let windows handle the default input now
-            restult = DefWindowProcA(window, msg, wParam, lParam);
+            result = DefWindowProcA(window, msg, wParam, lParam);
         }
     }
 
-    return restult;
+    return result;
 }
 
 // create window

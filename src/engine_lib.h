@@ -25,45 +25,45 @@
 // ######################
 // Logger
 // ######################
-enum TextColor {
-    TEXT_COLOR_BLACK,
-    TEXT_COLOR_RED,
-    TEXT_COLOR_GREEN,
-    TEXT_COLOR_YELLOW,
-    TEXT_COLOR_BLUE,
-    TEXT_COLOR_MAGENTA,
-    TEXT_COLOR_CYAN,
-    TEXT_COLOR_WHITE,
-    TEXT_COLOR_BRIGHT_BLACK,
-    TEXT_COLOR_BRIGHT_RED,
-    TEXT_COLOR_BRIGHT_GREEN,
-    TEXT_COLOR_BRIGHT_YELLOW,
-    TEXT_COLOR_BRIGHT_BLUE,
-    TEXT_COLOR_BRIGHT_MAGENTA,
-    TEXT_COLOR_BRIGHT_CYAN,
-    TEXT_COLOR_BRIGHT_WHITE,
-    TEXT_COLOR_COUNT
+enum TextColor {  
+  TEXT_COLOR_BLACK,
+  TEXT_COLOR_RED,
+  TEXT_COLOR_GREEN,
+  TEXT_COLOR_YELLOW,
+  TEXT_COLOR_BLUE,
+  TEXT_COLOR_MAGENTA,
+  TEXT_COLOR_CYAN,
+  TEXT_COLOR_WHITE,
+  TEXT_COLOR_BRIGHT_BLACK,
+  TEXT_COLOR_BRIGHT_RED,
+  TEXT_COLOR_BRIGHT_GREEN,
+  TEXT_COLOR_BRIGHT_YELLOW,
+  TEXT_COLOR_BRIGHT_BLUE,
+  TEXT_COLOR_BRIGHT_MAGENTA,
+  TEXT_COLOR_BRIGHT_CYAN,
+  TEXT_COLOR_BRIGHT_WHITE,
+  TEXT_COLOR_COUNT
 };
 
 template <typename ...Args>
 void _log(char* prefix, char* msg, TextColor textColor, Args... args) {
     static char* TextColorTable[TEXT_COLOR_COUNT] = {
-        "\x1b[30m", // BLACK
-        "\x1b[31m", // RED
-        "\x1b[32m", // GREEN
-        "\x1b[33m", // YELLOW
-        "\x1b[34m", // BLUE
-        "\x1b[35m", // MAGENTA
-        "\x1b[36m", // CYAN
-        "\x1b[37m", // WHITE
-        "\x1b[90m", // BRIGHT BLACK
-        "\x1b[91m", // BRIGHT RED
-        "\x1b[92m", // BRIGHT GREEN
-        "\x1b[93m", // BRIGHT YELLOW
-        "\x1b[94m", // BRIGHT BLUE
-        "\x1b[95m", // BRIGHT MAGENTA
-        "\x1b[96m", // BRIGHT CYAN
-        "\x1b[97m", // BRIGHT WHITE
+        "\x1b[30m", // TEXT_COLOR_BLACK
+        "\x1b[31m", // TEXT_COLOR_RED
+        "\x1b[32m", // TEXT_COLOR_GREEN
+        "\x1b[33m", // TEXT_COLOR_YELLOW
+        "\x1b[34m", // TEXT_COLOR_BLUE
+        "\x1b[35m", // TEXT_COLOR_MAGENTA
+        "\x1b[36m", // TEXT_COLOR_CYAN
+        "\x1b[37m", // TEXT_COLOR_WHITE
+        "\x1b[90m", // TEXT_COLOR_BRIGHT_BLACK
+        "\x1b[91m", // TEXT_COLOR_BRIGHT_RED
+        "\x1b[92m", // TEXT_COLOR_BRIGHT_GREEN
+        "\x1b[93m", // TEXT_COLOR_BRIGHT_YELLOW
+        "\x1b[94m", // TEXT_COLOR_BRIGHT_BLUE
+        "\x1b[95m", // TEXT_COLOR_BRIGHT_MAGENTA
+        "\x1b[96m", // TEXT_COLOR_BRIGHT_CYAN
+        "\x1b[97m", // TEXT_COLOR_BRIGHT_WHITE
     };
 
     char formatBuffer[8192] = {};
@@ -116,7 +116,7 @@ char* bump_alloc(BumpAllocator* bumpAllocator, size_t size) {
     size_t allignedSize = (size + 7) & ~ 7; // first 4 bits are 0
     if(bumpAllocator->used + allignedSize <= bumpAllocator->capacity) {
         result = bumpAllocator->memory + bumpAllocator->used;
-        bumpAllocator += allignedSize;
+        bumpAllocator->used += allignedSize;
     } else {
         SM_ASSERT(false, "BumpAllocator is full!");
     }

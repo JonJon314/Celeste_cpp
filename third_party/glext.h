@@ -32,7 +32,7 @@ extern "C" {
 #define GLAPI extern
 #endif
 
-#define GL_GLEXT_VERSION 20250203
+#define GL_GLEXT_VERSION 20230705
 
 #include <KHR/khrplatform.h>
 
@@ -9404,11 +9404,6 @@ GLAPI void APIENTRY glResizeBuffersMESA (void);
 #define GL_MESA_shader_integer_functions 1
 #endif /* GL_MESA_shader_integer_functions */
 
-#ifndef GL_MESA_texture_const_bandwidth
-#define GL_MESA_texture_const_bandwidth 1
-#define GL_CONST_BW_TILING_MESA           0x8BBE
-#endif /* GL_MESA_texture_const_bandwidth */
-
 #ifndef GL_MESA_tile_raster_order
 #define GL_MESA_tile_raster_order 1
 #define GL_TILE_RASTER_ORDER_FIXED_MESA   0x8BB8
@@ -11983,10 +11978,8 @@ GLAPI void APIENTRY glViewportSwizzleNV (GLuint index, GLenum swizzlex, GLenum s
 #define GL_MAX_VIEWS_OVR                  0x9631
 #define GL_FRAMEBUFFER_INCOMPLETE_VIEW_TARGETS_OVR 0x9633
 typedef void (APIENTRYP PFNGLFRAMEBUFFERTEXTUREMULTIVIEWOVRPROC) (GLenum target, GLenum attachment, GLuint texture, GLint level, GLint baseViewIndex, GLsizei numViews);
-typedef void (APIENTRYP PFNGLNAMEDFRAMEBUFFERTEXTUREMULTIVIEWOVRPROC) (GLuint framebuffer, GLenum attachment, GLuint texture, GLint level, GLint baseViewIndex, GLsizei numViews);
 #ifdef GL_GLEXT_PROTOTYPES
 GLAPI void APIENTRY glFramebufferTextureMultiviewOVR (GLenum target, GLenum attachment, GLuint texture, GLint level, GLint baseViewIndex, GLsizei numViews);
-GLAPI void APIENTRY glNamedFramebufferTextureMultiviewOVR (GLuint framebuffer, GLenum attachment, GLuint texture, GLint level, GLint baseViewIndex, GLsizei numViews);
 #endif
 #endif /* GL_OVR_multiview */
 
