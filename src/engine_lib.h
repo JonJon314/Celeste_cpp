@@ -10,10 +10,13 @@
 // ######################
 #ifdef _WIN32
 #define DEBUG_BREAK() __debugbreak()
+#define EXPORT_FN __declspec(dllexport)
 #elif __linux__
 #define DEBUG_BREAK() __builtin_debugtrap()
+#define EXPORT_FN
 #elif __APPLE__
 #define DEBUG_BREAK() __builtin_trap()
+#define EXPORT_FN
 #endif
 
 #define BIT(x) 1 << (x)
@@ -194,7 +197,7 @@ char* read_file(char* filePath, int* fileSize, BumpAllocator* bumpAllocator) {
     long fileSize2 = get_file_size(filePath);
 
     if(fileSize2) {
-        char* buffer = bump_alloc(bumpAllocator, fileSize2);
+        char* buffer = bump_alloc(bumpAllocator, fileSize2 + 1);
 
         file = read_file(filePath, fileSize, buffer);
     }
@@ -240,7 +243,7 @@ bool copy_file(char* fileName, char* outputName, BumpAllocator* bumpAllocator) {
     char* file = 0;
     long fileSize2 = get_file_size(fileName);
 
-    if(!fileSize2) {
+    if(fileSize2) {
         char* buffer = bump_alloc(bumpAllocator, fileSize2 + 1);
 
         return copy_file(fileName, outputName, buffer);
@@ -248,3 +251,16 @@ bool copy_file(char* fileName, char* outputName, BumpAllocator* bumpAllocator) {
 
     return false;
 }
+
+// ################################
+// Math stuff
+// ################################
+struct Vec2 {
+    float x;
+    float y;
+};
+
+struct IVec2 {
+    int x;
+    int y;
+};

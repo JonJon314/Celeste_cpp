@@ -4,6 +4,8 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
+#include "render_interface.h"
+
 // ################################
 // OpenGL Constants
 // ################################
@@ -16,6 +18,8 @@ const char* TEXTURE_PATH = "assets/textures/texture_atlas.png";
 struct GLContext {
     GLuint programID;
     GLuint textureID;
+    GLuint transformSBOID;
+    GLuint screenSizeID;
 };
 
 
@@ -120,7 +124,7 @@ bool gl_init(BumpAllocator* transientStorage) {
         glBindTexture(GL_TEXTURE_2D, glContext.textureID);
 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
@@ -128,6 +132,19 @@ bool gl_init(BumpAllocator* transientStorage) {
 
         stbi_image_free(data);
     }
+
+    // Transform Storage Buffer
+    {
+        glGenBuffers(1, &glContext.transformSBOID);
+        glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, glContext.transformSBOID);
+        glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(Transform) * MAX_TRANSFORMS, renderData->transforms, GL_DYNAMIC_DRAW);
+    }
+
+    // Uniforms
+    {
+        glContext.screenSizeID = glGetUniformLocation(glContext.programID, "screenSize");
+    }
+
     glEnable(GL_FRAMEBUFFER_SRGB);
     glDisable(0x809D); // disable multisampling
 
@@ -142,10 +159,23 @@ bool gl_init(BumpAllocator* transientStorage) {
 }
 
 void gl_render() {
-    glClearColor(0.5f, 0.0f, 0.0f, 1.0f);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClearDepth(0.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glViewport(0, 0, input.screenSizeX, input.screenSizeY);
+    glViewport(0, 0, input->screenSizeX, input->screenSizeY);
 
-    glDrawArrays(GL_TRIANGLES, 0, 6);
+    // Copy screen size to the GPU
+    Vec2 screenSize = {(float)input->screenSizeX, (float)input->screenSizeY};
+    glUniform2fv(glContext.screenSizeID, 1, &screenSize.x);
+
+    // Opaque Objects
+    {
+        // Copy Transforms to the GPU
+        glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(Transform) * renderData->transformCount, renderData->transforms);
+
+        glDrawArraysInstanced(GL_TRIANGLES, 0, 6, renderData->transformCount);
+
+        // Reset for next Frame
+        renderData->transformCount = 0;
+    }
 }
